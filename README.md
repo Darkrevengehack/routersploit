@@ -1,142 +1,125 @@
-# RouterSploit - Exploitation Framework for Embedded Devices
+# RouterSploit
 
-[![Python 3.6](https://img.shields.io/badge/Python-3.6-yellow.svg)](http://www.python.org/download/)
-[![Build Status](https://travis-ci.org/threat9/routersploit.svg?branch=master)](https://travis-ci.org/threat9/routersploit)
+Version 3.5.0
 
-# Community
-Join community on [Embedded Exploitation Discord](https://discord.gg/UCXARN2vBx).
+Framework de explotación para dispositivos embebidos, con mejoras específicas para uso en Termux.
 
-# Description
-The RouterSploit Framework is an open-source exploitation framework dedicated to embedded devices.
+## Características añadidas
 
-[![asciicast](https://asciinema.org/a/180370.png)](https://asciinema.org/a/180370)
+- Soporte mejorado para Termux sin root
+- Interfaz optimizada para pantallas móviles
+- Sistema de actualización automática de CVEs
+- Soporte para protocolos modernos (TLS/SSL)
+- Sistema de plugins extensible
 
-It consists of various modules that aid penetration testing operations:
+## Instalación
 
-* exploits - modules that take advantage of identified vulnerabilities
-* creds - modules designed to test credentials against network services
-* scanners - modules that check if a target is vulnerable to any exploit
-* payloads - modules that are responsible for generating payloads for various architectures and injection points
-* generic - modules that perform generic attacks 
-
-# Installation
-
-## Requirements
-
-Required:
-* requests
-* paramiko
-* pysnmp
-* pycrypto
-
-Optional:
-* bluepy - Bluetooth low energy 
-
-## Installation on Kali Linux
-
-```
-apt-get install python3-pip
-git clone https://www.github.com/threat9/routersploit
+```bash
+git clone https://github.com/Darkrevengehack/routersploit.git
 cd routersploit
 python3 -m pip install -r requirements.txt
 python3 rsf.py
-```
+## ¿Por qué usar entornos virtuales en Termux?
 
-Bluetooth Low Energy support:
-```
-apt-get install libglib2.0-dev
-python3 -m pip install bluepy
-python3 rsf.py
-```
+Los entornos virtuales (venv) ofrecen varias ventajas importantes al trabajar con RouterSploit en Termux:
 
-## Installation on Ubuntu 20.04
+1. **Aislamiento de dependencias**: Evita conflictos con otros paquetes Python instalados en Termux
+2. **Fácil gestión de versiones**: Asegura que estás usando las versiones correctas de cada biblioteca
+3. **Mejor rendimiento**: Reduce la sobrecarga de memoria al cargar solo las bibliotecas necesarias
+4. **Fácil limpieza**: Puedes eliminar el entorno virtual sin afectar al resto del sistema
+5. **Portabilidad**: Puedes mover o compartir el entorno completo entre dispositivos
 
-```
-sudo apt-get install git python3-pip
-git clone https://github.com/threat9/routersploit
+Para activar el entorno después de cerrar la terminal, usa siempre:
+```bash
 cd routersploit
-python3 -m pip install -r requirements.txt
-python3 rsf.py
+source venv/bin/activate.fish
 ```
 
-Bluetooth Low Energy support:
+## Uso
 
+### Comandos principales
+
+- `help` - Muestra la ayuda
+- `use <módulo>` - Selecciona un módulo
+- `show options` - Muestra opciones del módulo
+- `set <opción> <valor>` - Establece valor para una opción
+- `run` - Ejecuta el módulo
+- `update_cves` - Busca y genera plantillas para CVEs recientes
+- `plugin create <nombre>` - Crea un nuevo plugin
+- `touch_menu` - Muestra un menú optimizado para pantallas táctiles
+
+## Mejoras Implementadas
+
+### 1. Soporte Mejorado para Termux
+- Detección automática de entorno Termux
+- Adaptaciones para interfaces de pantallas pequeñas
+- Manejo optimizado de recursos limitados
+
+### 2. Interfaz para Dispositivos Móviles
+- Menú táctil optimizado para pantallas pequeñas
+- Formato adaptativo para tablas y salidas largas
+- Detección automática del tamaño de pantalla
+
+### 3. Sistema de Actualización Automática de CVEs
+- Búsqueda automática de vulnerabilidades recientes en la NVD
+- Generación de plantillas para exploits basadas en CVEs
+- Clasificación inteligente por tipo de vulnerabilidad
+- Integración con API oficial con gestión de claves
+
+### 4. Soporte para Protocolos Modernos
+- Escáner TLS/SSL para detectar configuraciones inseguras
+- Detección de vulnerabilidades como Heartbleed, ROBOT, y CCS Injection
+- Soporte para protocolos IoT como MQTT
+- Análisis de certificados SSL
+
+### 5. Sistema de Plugins
+- Arquitectura extensible para plugins de terceros
+- Carga dinámica de funcionalidades adicionales
+- Sistema de registro de plugins en el intérprete
+
+### 6. Otras Mejoras
+- Mejor manejo de errores y reintentos
+- Configuración más robusta
+- Documentación mejorada
+
+## API Key para búsqueda de CVEs
+
+Para usar la funcionalidad de búsqueda de CVEs con mejor rendimiento:
+
+1. Obtén una API key gratuita en: https://nvd.nist.gov/developers/request-an-api-key
+2. Al ejecutar el comando `update_cves` por primera vez, se te pedirá si deseas configurar una API key
+3. También puedes configurar manualmente la API key creando un archivo `config.ini` en `routersploit/utils/updaters/` basado en el archivo `config.ini.example`
+
+## Permisos de ejecución
+
+Después de clonar el repositorio, es necesario otorgar permisos de ejecución a ciertos archivos:
+
+```bash
+# Hacer ejecutable el actualizador de CVEs
+chmod +x routersploit/utils/updaters/cve_updater.py
+
+# El script principal ya debería tener permisos de ejecución
+chmod +x rsf.py
 ```
-sudo apt-get install libglib2.0-dev
-python3 -m pip install bluepy
-python3 rsf.py
+
+Si creas tus propios plugins, también necesitarás darles permisos de ejecución:
+```bash
+chmod +x routersploit/plugins/mi_plugin/__init__.py
 ```
 
-## Installation on Ubuntu 18.04 & 17.10
+## Creación de plugins personalizados
 
+Puedes extender RouterSploit con plugins personalizados:
+
+1. Crea un nuevo plugin usando el comando: `plugin create nombre_plugin`
+2. Edita el archivo `plugins/nombre_plugin/__init__.py` para implementar tu funcionalidad
+3. Reinicia RouterSploit para cargar automáticamente tu plugin
+
+## Licencia
+
+Este proyecto es una modificación de RouterSploit y mantiene la licencia original.
+
+## Contribuir
+
+Si encuentras algún problema o tienes ideas para mejorar esta versión de RouterSploit, por favor abre un issue o envía un pull request.
 ```
-sudo add-apt-repository universe
-sudo apt-get install git python3-pip
-git clone https://www.github.com/threat9/routersploit
-cd routersploit
-python3 -m pip install setuptools
-python3 -m pip install -r requirements.txt
-python3 rsf.py
-```
-
-Bluetooth Low Energy support:
-```
-apt-get install libglib2.0-dev
-python3 -m pip install bluepy
-python3 rsf.py
-```
-
-
-## Installation on OSX
-
-```
-git clone https://www.github.com/threat9/routersploit
-cd routersploit
-sudo python3 -m pip install -r requirements.txt
-python3 rsf.py
-```
-
-## Running on Docker
-
-```
-git clone https://www.github.com/threat9/routersploit
-cd routersploit
-docker compose up --build -d
-docker attach routersploit
-```
-### To run again without rebuild
-
-```
-docker start routersploit
-docker attach routersploit
-```
-
-# Update
-
-Update RouterSploit Framework often. The project is under heavy development and new modules are shipped almost every day.
-
-```
-cd routersploit
-git pull
-```
-
-# Build your own
-To our surprise, people started to fork 
-[routersploit](https://github.com/threat9/routersploit) not because they were 
-interested in the security of embedded devices but simply because they want to 
-leverage our interactive shell logic and build their tools using similar 
-concept. All these years they must have said: _"There must be a better way!"_ 
-and they were completely right, the better way is called 
-[_Riposte_](https://github.com/fwkz/riposte).
-
-[_Riposte_](https://github.com/fwkz/riposte) allows you to easily wrap your 
-application inside a tailored interactive shell. Common chores regarding 
-building REPLs was factored out and being taken care of so you can 
-focus on specific domain logic of your application.
-# License
-
-The RouterSploit Framework is under a BSD license.
-Please see [LICENSE](LICENSE) for more details.
-
-# Acknowledgments
-* [riposte](https://github.com/fwkz/riposte)

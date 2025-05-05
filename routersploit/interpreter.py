@@ -202,6 +202,8 @@ class RoutersploitInterpreter(BaseInterpreter):
     use <module>                Select a module for usage
     exec <shell command> <args> Execute a command in a shell
     search <search term>        Search for appropriate module
+    plugin <action> [args]      Manage RouterSploit plugins
+    update_cves                 Search for recent CVEs and generate module templates
     exit                        Exit RouterSploit"""
 
     module_help = """Module commands:
@@ -224,7 +226,7 @@ class RoutersploitInterpreter(BaseInterpreter):
         self.show_sub_commands = ("info", "options", "advanced", "devices", "all", "encoders", "creds", "exploits", "scanners", "wordlists")
         self.search_sub_commands = ("type", "device", "language", "payload", "vendor")
 
-        self.global_commands = sorted(["use ", "exec ", "help", "exit", "show ", "search "])
+        self.global_commands = sorted(["use ", "exec ", "help", "exit", "show ", "search ", "update_cves ", "plugin "])
         self.module_commands = ["run", "back", "set ", "setg ", "check"]
         self.module_commands.extend(self.global_commands)
         self.module_commands.sort()
@@ -247,7 +249,7 @@ class RoutersploitInterpreter(BaseInterpreter):
             Embedded Devices
 
  Codename   : I Knew You Were Trouble
- Version    : 3.4.7
+ Version    : 3.5.0
  Homepage   : https://www.threat9.com - @threatnine
 
  Exploits: {exploits_count} Scanners: {scanners_count} Creds: {creds_count} Generic: {generic_count} Payloads: {payloads_count} Encoders: {encoders_count}
@@ -257,6 +259,13 @@ class RoutersploitInterpreter(BaseInterpreter):
            generic_count=self.modules_count["generic"],
            payloads_count=self.modules_count["payloads"],
            encoders_count=self.modules_count["encoders"])
+
+        # Cargar plugins
+        try:
+            from routersploit.plugins import load_plugins
+            load_plugins(self)
+        except Exception as e:
+            print_error(f"Error al cargar plugins: {str(e)}")
 
     def __parse_prompt(self):
         raw_prompt_default_template = "\001\033[4m\002{host}\001\033[0m\002 > "
@@ -683,6 +692,58 @@ class RoutersploitInterpreter(BaseInterpreter):
             return [command for command in self.search_sub_commands if command.startswith(text)]
         else:
             return self.search_sub_commands
+
+    def command_update_cves(self, *args, **kwargs):
+        """Busca CVEs recientes y genera plantillas de módulos"""
+        try:
+            from routersploit.utils.updaters.cve_updater import run
+            run()
+        except Exception as e:
+            print_error(f"Error al ejecutar el actualizador de CVEs: {str(e)}")
+            print_info("Asegúrate de que las dependencias estén instaladas:")
+            print_info("pip install requests")
+
+    @stop_after(2)
+    def complete_update_cves(self, text, *args, **kwargs):
+        """Autocompletado para el comando update_cves"""
+        sub_commands = ['search']
+        if text:
+            return [command for command in sub_commands if command.startswith(text)]
+        else:
+            return sub_commands
+
+    def command_plugin(self, *args, **kwargs):
+        """Gestiona plugins de RouterSploit"""
+        if not args:
+            print_error("Especifica una acción para el comando plugin")
+            print_info("Acciones disponibles: create")
+            return
+        
+        action = args[0]
+        if action == "create":
+            if len(args) < 2:
+                print_error("Especifica un nombre para el plugin")
+                print_info("Ejemplo: plugin create mi_plugin")
+                return
+            
+            plugin_name = args[1]
+            try:
+                from routersploit.plugins import create_plugin_template
+                create_plugin_template(plugin_name)
+            except Exception as e:
+                print_error(f"Error al crear plantilla de plugin: {str(e)}")
+        else:
+            print_error(f"Acción desconocida: {action}")
+            print_info("Acciones disponibles: create")
+
+    @stop_after(2)
+    def complete_plugin(self, text, *args, **kwargs):
+        """Autocompletado para el comando plugin"""
+        sub_commands = ['create']
+        if text:
+            return [command for command in sub_commands if command.startswith(text)]
+        else:
+            return sub_commands
 
     def command_exit(self, *args, **kwargs):
         raise EOFError

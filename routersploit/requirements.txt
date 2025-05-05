@@ -1,0 +1,4 @@
+requests>=2.25.0
+paramiko>=3.5.0
+pysnmp>=4.4.12
+pycryptodome>=3.14.1
