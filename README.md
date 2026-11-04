@@ -14,9 +14,12 @@ Framework de explotación para dispositivos embebidos, con mejoras específicas 
 
 ## Instalación
 
-```bash
+> **Requisito**: Python 3.8 o superior. Si tu sistema tiene tanto Python 2 como Python 3 instalados, usa siempre `python3` y `pip3` explícitamente (no `python`/`pip` a secas) para evitar conflictos.
+
 git clone https://github.com/Darkrevengehack/routersploit.git
 cd routersploit
+python3 -m venv venv
+source venv/bin/activate
 python3 -m pip install -r requirements.txt
 python3 rsf.py
 ## ¿Por qué usar entornos virtuales en Termux?
