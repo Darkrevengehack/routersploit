@@ -35,6 +35,11 @@ cd routersploit
 source venv/bin/activate.fish
 ```
 
+Nota: si tu shell es bash o zsh (el predeterminado en Termux), usa en su lugar:
+
+source venv/bin/activate
+
+Para saber qué shell tienes activo: echo $SHELL
 ## Uso
 
 ### Comandos principales
