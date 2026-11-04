@@ -43,6 +43,10 @@ Nota: si tu shell es bash o zsh (el predeterminado en Termux), usa en su lugar:
 source venv/bin/activate
 
 Para saber qué shell tienes activo: echo $SHELL
+
+Para salir del entorno virtual y volver al Python global de Termux:
+```bash
+deactivate
 ## Uso
 
 ### Comandos principales
