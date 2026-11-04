@@ -1,7 +1,6 @@
-import pkg_resources
+import importlib.resources as resources
 
-
-defaults = 'file://' + pkg_resources.resource_filename(__name__, 'defaults.txt')
-passwords = 'file://' + pkg_resources.resource_filename(__name__, 'passwords.txt')
-usernames = 'file://' + pkg_resources.resource_filename(__name__, 'usernames.txt')
-snmp = 'file://' + pkg_resources.resource_filename(__name__, 'snmp.txt')
+defaults = 'file://' + str(resources.files(__name__) / 'defaults.txt')
+passwords = 'file://' + str(resources.files(__name__) / 'passwords.txt')
+usernames = 'file://' + str(resources.files(__name__) / 'usernames.txt')
+snmp = 'file://' + str(resources.files(__name__) / 'snmp.txt')

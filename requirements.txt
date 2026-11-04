@@ -2,3 +2,5 @@ requests
 paramiko
 pysnmp
 pycryptodome
+setuptools<81
+telnetlib3
